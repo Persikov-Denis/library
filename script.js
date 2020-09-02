@@ -7,7 +7,7 @@ let books = [
         authorsName: 'Лев Толстой',
         yearPublishing: '1867',
         editionNames: ' М. Н. Каткова',
-        numberPages: '1 225',
+        numberPages: 1225,
     },
 
     {
@@ -16,30 +16,28 @@ let books = [
         authorsName: 'Лев Толстой',
         yearPublishing: '1867',
         editionNames: ' М. Н. Каткова',
-        numberPages: '1 225',
+        numberPages: 1225,
     },
 
     {
         id: 3,
-        name: '1984',
+        name: 'Глотнуть воздуха',
         authorsName: 'Оруэлл Джордж',
         yearPublishing: '1949',
         editionNames: ' Издательство АСТ',
-        numberPages: '328',
+        numberPages: 328,
+    },
+
+    {
+        id: 4,
+        name: 'Глотнуть воздуха',
+        authorsName: 'Оруэлл Джордж',
+        yearPublishing: '1949',
+        editionNames: ' Издательство АСТ',
+        numberPages: 328,
     }
 ];
 
-
-
-function booksRender() {
-    content.innerHTML = '';
-    
-	books.forEach((book, index) => {
-        let temp = getTemplate(book, index);
-        render(temp);
-    });
-}
-booksRender();
 
 
 function render(temp) {
@@ -52,15 +50,15 @@ function getTemplate(book,index) {
             <td class="li-all id">${index +1}</td>
             <td  class="input-all id hidden"><input type="text"></td>
             <td class="li-all name">${book.name}</td>
-            <td class="input-all name hidden"><input type="text"></td>
+            <td class="input-all name hidden"><input class="input-name" type="text"></td>
             <td class="li-all authorsName">${book.authorsName}</td>
             <td class="input-all authorsName hidden"><input type="text"></td>
             <td class="li-all yearPublishing">${book.yearPublishing}</td>
-            <td  class="input-all yearPublishing hidden"><input type="text"></td>
+            <td  class="input-all yearPublishing hidden"><input type="number"></td>
             <td class="li-all editionNames">${book.editionNames}</td>
             <td  class="input-all editionNames hidden"><input type="text"></td>
             <td class="li-all numberPages">${book.numberPages}</td>
-            <td class="input-all numberPages hidden"><input type="text"></td>
+            <td class="input-all numberPages hidden"><input type="number"></td>
             <td class="button-common">
             <button class="remove">Удалить</button>
             <button class="edit">Редактировать</button>
@@ -76,9 +74,9 @@ function getAddTemplate() {
         <td class="input-all id"></td>
         <td class="input-all name"><input type="text"></td>
         <td class="input-all authorsName"><input type="text"></td>
-        <td class="input-all yearPublishing"><input type="text"></td>
+        <td class="input-all yearPublishing"><input type="number"></td>
         <td class="input-all editionNames"><input type="text"></td>
-        <td class="input-all numberPages"><input type="text"></td>
+        <td class="input-all numberPages"><input type="number"></td>
         <td class="button-common">
             <button class="remove">Удалить</button>
             <button class="edit">Редактировать</button>
@@ -86,6 +84,16 @@ function getAddTemplate() {
         </td>
     </tr>`;
 }
+
+function booksRender() {
+    content.innerHTML = '';
+    
+	books.forEach((book,index) => {
+        let temp = getTemplate(book,index);
+        render(temp);
+    });
+}
+booksRender();
 
 content.addEventListener('click', remove);
 content.addEventListener('click', edit);
@@ -121,7 +129,6 @@ function edit(event) {
 }
 
 function save(event) {
-
     if ( !event.target.classList.contains('save') ) return;
 
     let content = event.target.closest('.content');
@@ -132,14 +139,63 @@ function save(event) {
         authorsName: content.querySelector('.input-all.authorsName input').value,
         yearPublishing: content.querySelector('.input-all.yearPublishing input').value,
         editionNames: content.querySelector('.input-all.editionNames input').value,
-        numberPages: content.querySelector('.input-all.numberPages input').value,
+        numberPages: content.querySelector('.input-all.numberPages input').value
     };
+
+    if( book.name == '') {
+        alert('Поле не может быть пустым');
+        return;
+    }
+
+    // if ( !book.name.match(/^[а-я]{2,20}$/i) ) {
+    //     alert('Только текст и не более 20 символов, только русское название');
+    //     let reg = content.querySelector('.name input');
+    //     reg.classList.add('reg');
+    //     return;
+    // }
+
+    // if( book.authorsName == '' ) {
+    //     alert('Поле не может быть пустым');
+    //     return;
+    // }
+
+    // if( book.yearPublishing == '' ) {
+    //     alert('Поле не может быть пустым');
+    //     return;
+    // }
+
+    // if( book.editionNames == '' ) {
+    //     alert('Поле не может быть пустым');
+    //     return;
+    // }
+
+    // if( book.numberPages == '' ) {
+    //     alert('Поле не может быть пустым');
+    //     return;
+    // }
+
+
+
+    // if ( !book.authorsName.match(/^[а-я]{2,20}$/i)) {
+    //     alert('Только текст и не более 20 символов, только русское название');
+    //     let reg = content.querySelector('.input-all.authorsName input');
+    //     re.classList.add('reg');
+    //     return;
+    // }
+
+    // if ( !book.editionNames.match(/^[а-я]{2,20}$/i)) {
+    //     alert('Только текст и не более 20 символов, только русское название');
+    //     let reg = content.querySelector('.input-all.editionNames input');
+    //     r.classList.add('reg');
+    //     return;
+    // }
+
 
     if ( content.classList.contains('add-temlate') ) {
         books.push(book);
 
     } else {
-        let index = books.findIndex((book) => book.id === id);
+        let index = books.findIndex((book) => book.id === +id);
         books.splice(index, 1, book);
     }
 
@@ -159,14 +215,29 @@ serch.addEventListener('click', serchButton);
 
 function serchButton() {
     let poisk = document.querySelector('.poisk').value;
-    let books2 = books.filter((item) => {
-        if( item.name.toLowerCase().includes( poisk.toLowerCase() ) ) {
+    books = books.filter((item) => {
+        if( item.name.toLowerCase().includes( poisk.toLowerCase() )) {
             return true;
         }
     });
-
-    booksRender(books2);
+    booksRender();
 }
+
+
+// Поиск по Enter
+  document.querySelector('.poisk').onkeypress = function(event) {
+
+    if(event.keyCode === 13) {
+        let poisk = document.querySelector('.poisk').value;
+        books = books.filter((item) => {
+            if( item.name.toLowerCase().includes( poisk.toLowerCase() )) {
+                return true;
+            }
+        });
+    }
+    booksRender();
+
+};
 
 
 
